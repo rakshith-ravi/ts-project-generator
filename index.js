@@ -72,7 +72,7 @@ async function generate(command) {
 	}
 
 	if (!command['no-git']) {
-		await fs.copyAsync(path.join(__dirname, 'templates', '.gitignore'), path.join(destinationPath, '.gitignore'));
+		await fs.copyAsync(path.join(__dirname, 'templates', 'gitignore'), path.join(destinationPath, '.gitignore'));
 	}
 
 	var package = {
