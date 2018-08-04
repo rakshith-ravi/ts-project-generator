@@ -64,15 +64,15 @@ async function generate(command) {
 			"typescript": "latest"
 		}
 	}));
-	await fs.copyAsync('./templates/gulpfile.js', path.join(destinationPath, 'gulpfile.js'));
-	await fs.copyAsync('./templates/tsconfig.json', path.join(destinationPath, 'tsconfig.json'));
+	await fs.copyAsync(path.join(__dirname, 'templates', 'gulpfile.js'), path.join(destinationPath, 'gulpfile.js'));
+	await fs.copyAsync(path.join(__dirname, 'templates', 'tsconfig.json'), path.join(destinationPath, 'tsconfig.json'));
 
 	if (!command['no-eslint']) {
-		await fs.copyAsync('./templates/.eslintrc', path.join(destinationPath, '.eslintrc'));
+		await fs.copyAsync(path.join(__dirname, 'templates', '.eslintrc'), path.join(destinationPath, '.eslintrc'));
 	}
 
 	if (!command['no-git']) {
-		await fs.copyAsync('./templates/.gitignore', path.join(destinationPath, '.gitignore'));
+		await fs.copyAsync(path.join(__dirname, 'templates', '.gitignore'), path.join(destinationPath, '.gitignore'));
 	}
 
 	var package = {
@@ -87,7 +87,7 @@ async function generate(command) {
 	if (command.js || command.javascript) {
 		if (command.express) {
 			// Copy main file
-			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
 
 			// Set package dependencies for express app
 			package.dependencies.debug = 'latest';
@@ -96,7 +96,7 @@ async function generate(command) {
 			package.dependencies['cookie-parser'] = 'latest';
 
 			// Copy index route
-			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'routes', 'index.js'), path.join(destinationPath, 'src', 'routes', 'index.js'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'routes', 'index.js'), path.join(destinationPath, 'src', 'routes', 'index.js'));
 
 			// Make directory for views
 			await mkdirAsync(path.join(destinationPath, 'src', 'views'));
@@ -107,30 +107,30 @@ async function generate(command) {
 				package.dependencies.ejs = 'latest';
 
 				// Copy EJS app
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'app-ejs.js'), path.join(destinationPath, 'src', 'app.js'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'app-ejs.js'), path.join(destinationPath, 'src', 'app.js'));
 
 				// Copy EJS views
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
 			} else if (command.hbs) {
 				// Add HandleBars as a dependency
 				package.dependencies.hbs = 'latest';
 
 				// Copy HandleBars' app
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'app-hbs.js'), path.join(destinationPath, 'src', 'app.js'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'app-hbs.js'), path.join(destinationPath, 'src', 'app.js'));
 
 				// Copy HandleBars' views
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'views', 'base.hbs'), path.join(destinationPath, 'src', 'views', 'base.hbs'));
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'views', 'index.hbs'), path.join(destinationPath, 'src', 'views', 'index.hbs'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'views', 'base.hbs'), path.join(destinationPath, 'src', 'views', 'base.hbs'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'views', 'index.hbs'), path.join(destinationPath, 'src', 'views', 'index.hbs'));
 			} else {
 				// Add Pug as a dependency
 				package.dependencies.pug = 'latest';
 
 				// Copy Pug's app
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'app-pug.js'), path.join(destinationPath, 'src', 'app.js'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'app-pug.js'), path.join(destinationPath, 'src', 'app.js'));
 
 				// Copy Pug's views
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'views', 'base.pug'), path.join(destinationPath, 'src', 'views', 'base.pug'));
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'views', 'index.pug'), path.join(destinationPath, 'src', 'views', 'index.pug'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'views', 'base.pug'), path.join(destinationPath, 'src', 'views', 'base.pug'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'views', 'index.pug'), path.join(destinationPath, 'src', 'views', 'index.pug'));
 			}
 
 			// Make public folder
@@ -141,7 +141,7 @@ async function generate(command) {
 			await mkdirAsync(path.join(destinationPath, 'src', 'public', 'images'));
 			await mkdirAsync(path.join(destinationPath, 'src', 'public', 'javascripts'));
 			// Push index.js of javascripts sub-folder in public
-			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'public', 'javascripts', 'index.js'), path.join(destinationPath, 'src', 'public', 'javascripts', 'index.js'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'public', 'javascripts', 'index.js'), path.join(destinationPath, 'src', 'public', 'javascripts', 'index.js'));
 
 			// Make stylesheets
 			await mkdirAsync(path.join(destinationPath, 'src', 'public', 'stylesheets'));
@@ -149,39 +149,39 @@ async function generate(command) {
 			// Populate stylesheets directory based on the stylesheet selected
 			if (command.sass) {
 				// Copy SASS styles
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'public', 'stylesheets', 'style.sass'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.sass'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'public', 'stylesheets', 'style.sass'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.sass'));
 			} else if (command.css) {
 				// Copy barebone CSS styles
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'public', 'stylesheets', 'style.css'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.css'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'public', 'stylesheets', 'style.css'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.css'));
 			} else {
 				// Copy SCSS styles (default)
-				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'public', 'stylesheets', 'style.scss'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.scss'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'public', 'stylesheets', 'style.scss'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.scss'));
 			}
 		} else if (command.static) {
 			// Copy the main file
-			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'static-page', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'static-page', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
 
 			// Copy the assets
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.html'), path.join(destinationPath, 'src', 'assets', 'index.html'));
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.js'), path.join(destinationPath, 'src', 'assets', 'index.js'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'index.html'), path.join(destinationPath, 'src', 'assets', 'index.html'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'index.js'), path.join(destinationPath, 'src', 'assets', 'index.js'));
 			if (command.sass) {
 				// Copy SASS styles
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.sass'), path.join(destinationPath, 'src', 'assets', 'style.sass'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'style.sass'), path.join(destinationPath, 'src', 'assets', 'style.sass'));
 			} else if (command.css) {
 				// Copy barebone CSS styles
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.css'), path.join(destinationPath, 'src', 'assets', 'style.css'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'style.css'), path.join(destinationPath, 'src', 'assets', 'style.css'));
 			} else {
 				// Copy SCSS styles (default)
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.scss'), path.join(destinationPath, 'src', 'assets', 'style.scss'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'style.scss'), path.join(destinationPath, 'src', 'assets', 'style.scss'));
 			}
 		} else {
 			// Copy the main file
-			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'main', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'main', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
 		}
 	} else {
 		if (command.express) {
 			// Copy main file
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
 
 			// Set package dependencies for express app
 			package.dependencies = {};
@@ -195,7 +195,7 @@ async function generate(command) {
 			package.dependencies['@types/morgan'] = 'latest';
 
 			// Copy index route
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'routes', 'index.ts'), path.join(destinationPath, 'src', 'routes', 'index.ts'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'routes', 'index.ts'), path.join(destinationPath, 'src', 'routes', 'index.ts'));
 
 			// Make directory for views
 			await mkdirAsync(path.join(destinationPath, 'src', 'views'));
@@ -206,30 +206,30 @@ async function generate(command) {
 				package.dependencies.ejs = 'latest';
 
 				// Copy EJS app
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'app-ejs.ts'), path.join(destinationPath, 'src', 'app.ts'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'app-ejs.ts'), path.join(destinationPath, 'src', 'app.ts'));
 
 				// Copy EJS views
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
 			} else if (command.hbs) {
 				// Add HandleBars as a dependency
 				package.dependencies.hbs = 'latest';
 
 				// Copy HandleBars' app
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'app-hbs.ts'), path.join(destinationPath, 'src', 'app.ts'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'app-hbs.ts'), path.join(destinationPath, 'src', 'app.ts'));
 
 				// Copy HandleBars' views
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'views', 'base.hbs'), path.join(destinationPath, 'src', 'views', 'base.hbs'));
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'views', 'index.hbs'), path.join(destinationPath, 'src', 'views', 'index.hbs'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'views', 'base.hbs'), path.join(destinationPath, 'src', 'views', 'base.hbs'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'views', 'index.hbs'), path.join(destinationPath, 'src', 'views', 'index.hbs'));
 			} else {
 				// Add Pug as a dependency
 				package.dependencies.pug = 'latest';
 
 				// Copy Pug's app
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'app-pug.ts'), path.join(destinationPath, 'src', 'app.ts'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'app-pug.ts'), path.join(destinationPath, 'src', 'app.ts'));
 
 				// Copy Pug's views
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'views', 'base.pug'), path.join(destinationPath, 'src', 'views', 'base.pug'));
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'views', 'index.pug'), path.join(destinationPath, 'src', 'views', 'index.pug'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'views', 'base.pug'), path.join(destinationPath, 'src', 'views', 'base.pug'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'views', 'index.pug'), path.join(destinationPath, 'src', 'views', 'index.pug'));
 			}
 
 			// Make public folder
@@ -240,7 +240,7 @@ async function generate(command) {
 			await mkdirAsync(path.join(destinationPath, 'src', 'public', 'images'));
 			await mkdirAsync(path.join(destinationPath, 'src', 'public', 'javascripts'));
 			// Push index.ts of javascripts sub-folder in public
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'public', 'javascripts', 'index.ts'), path.join(destinationPath, 'src', 'public', 'javascripts', 'index.ts'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'public', 'javascripts', 'index.ts'), path.join(destinationPath, 'src', 'public', 'javascripts', 'index.ts'));
 
 			// Make stylesheets
 			await mkdirAsync(path.join(destinationPath, 'src', 'public', 'stylesheets'));
@@ -248,34 +248,34 @@ async function generate(command) {
 			// Populate stylesheets directory based on the stylesheet selected
 			if (command.sass) {
 				// Copy SASS styles
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'public', 'stylesheets', 'style.sass'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.sass'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'public', 'stylesheets', 'style.sass'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.sass'));
 			} else if (command.css) {
 				// Copy barebone CSS styles
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'public', 'stylesheets', 'style.css'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.css'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'public', 'stylesheets', 'style.css'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.css'));
 			} else {
 				// Copy SCSS styles (default)
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'public', 'stylesheets', 'style.scss'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.scss'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'public', 'stylesheets', 'style.scss'), path.join(destinationPath, 'src', 'public', 'stylesheets', 'style.scss'));
 			}
 		} else if (command.static) {
 			// Copy the main file
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
 
 			// Copy the assets
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.html'), path.join(destinationPath, 'src', 'assets', 'index.html'));
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.ts'), path.join(destinationPath, 'src', 'assets', 'index.ts'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'index.html'), path.join(destinationPath, 'src', 'assets', 'index.html'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'index.ts'), path.join(destinationPath, 'src', 'assets', 'index.ts'));
 			if (command.sass) {
 				// Copy SASS styles
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.sass'), path.join(destinationPath, 'src', 'assets', 'style.sass'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'style.sass'), path.join(destinationPath, 'src', 'assets', 'style.sass'));
 			} else if (command.css) {
 				// Copy barebone CSS styles
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.css'), path.join(destinationPath, 'src', 'assets', 'style.css'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'style.css'), path.join(destinationPath, 'src', 'assets', 'style.css'));
 			} else {
 				// Copy SCSS styles (default)
-				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.scss'), path.join(destinationPath, 'src', 'assets', 'style.scss'));
+				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'static-page', 'assets', 'style.scss'), path.join(destinationPath, 'src', 'assets', 'style.scss'));
 			}
 		} else {
 			// Copy the main file
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'main', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
+			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'main', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
 		}
 	}
 
