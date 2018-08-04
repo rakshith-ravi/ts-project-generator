@@ -13,7 +13,8 @@ program
 	.option('--css', 'Add CSS templates')
 	.option('--scss', 'Add SCSS templates')
 	.option('--sass', 'Add SASS templates')
-	.option('--git', 'Add .gitignore')
+	.option('--no-git', 'Skips .gitignore')
+	.option('--no-eslint', 'Skips .eslintrc')
 	.option('--js, --javascript', 'Set template to generate all scripts in javascript (defaults to typescript)')
 	.option('--static', 'Populate template with Static page')
 	.option('--main', 'Add basic main to template (default)')
@@ -42,7 +43,8 @@ async function generate(command) {
 			clean: 'gulp clean',
 			rebuild: 'gulp rebuild',
 			postinstall: 'cd src && npm install && cd .. && gulp && cd bin && npm install',
-			start: 'gulp && chmod +x ./bin/main.js && echo "Executing ./bin/main.js..." && ./bin/main.js'
+			start: 'gulp && chmod +x ./bin/main.js && echo "Executing ./bin/main.js..." && ./bin/main.js',
+			build: 'npm run clean && npm install'
 		},
 		license: 'ISC',
 		devDependencies: {
@@ -61,8 +63,15 @@ async function generate(command) {
 		}
 	}));
 	await fs.copyAsync('./templates/gulpfile.js', path.join(destinationPath, 'gulpfile.js'));
-	await fs.copyAsync('./templates/.eslintrc', path.join(destinationPath, '.eslintrc'));
 	await fs.copyAsync('./templates/tsconfig.json', path.join(destinationPath, 'tsconfig.json'));
+
+	if (!command['no-eslint']) {
+		await fs.copyAsync('./templates/.eslintrc', path.join(destinationPath, '.eslintrc'));
+	}
+
+	if (!command['no-git']) {
+		await fs.copyAsync('./templates/.gitignore', path.join(destinationPath, '.gitignore'));
+	}
 
 	var package = {
 		name: appName,
@@ -97,7 +106,7 @@ async function generate(command) {
 
 				// Copy EJS app
 				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'app-ejs.js'), path.join(destinationPath, 'src', 'app.js'));
-				
+
 				// Copy EJS views
 				await fs.copyAsync(path.join('.', 'templates', 'javascript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
 			} else if (command.hbs) {
@@ -149,9 +158,20 @@ async function generate(command) {
 		} else if (command.static) {
 			// Copy the main file
 			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'static-page', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
-			
-			// Copy the assets folder
-			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'static-page', 'assets'), path.join(destinationPath, 'src', 'assets'));
+
+			// Copy the assets
+			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.html'), path.join(destinationPath, 'src', 'assets', 'index.html'));
+			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.js'), path.join(destinationPath, 'src', 'assets', 'index.js'));
+			if (command.sass) {
+				// Copy SASS styles
+				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.sass'), path.join(destinationPath, 'src', 'assets', 'style.sass'));
+			} else if (command.css) {
+				// Copy barebone CSS styles
+				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.css'), path.join(destinationPath, 'src', 'assets', 'style.css'));
+			} else {
+				// Copy SCSS styles (default)
+				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.scss'), path.join(destinationPath, 'src', 'assets', 'style.scss'));
+			}
 		} else {
 			// Copy the main file
 			await fs.copyAsync(path.join('.', 'templates', 'javascript', 'main', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
@@ -185,7 +205,7 @@ async function generate(command) {
 
 				// Copy EJS app
 				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'app-ejs.ts'), path.join(destinationPath, 'src', 'app.ts'));
-				
+
 				// Copy EJS views
 				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
 			} else if (command.hbs) {
@@ -237,9 +257,20 @@ async function generate(command) {
 		} else if (command.static) {
 			// Copy the main file
 			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
-			
-			// Copy the assets folder
-			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets'), path.join(destinationPath, 'src', 'assets'));
+
+			// Copy the assets
+			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.html'), path.join(destinationPath, 'src', 'assets', 'index.html'));
+			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'index.ts'), path.join(destinationPath, 'src', 'assets', 'index.ts'));
+			if (command.sass) {
+				// Copy SASS styles
+				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.sass'), path.join(destinationPath, 'src', 'assets', 'style.sass'));
+			} else if (command.css) {
+				// Copy barebone CSS styles
+				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.css'), path.join(destinationPath, 'src', 'assets', 'style.css'));
+			} else {
+				// Copy SCSS styles (default)
+				await fs.copyAsync(path.join('.', 'templates', 'typescript', 'static-page', 'assets', 'style.scss'), path.join(destinationPath, 'src', 'assets', 'style.scss'));
+			}
 		} else {
 			// Copy the main file
 			await fs.copyAsync(path.join('.', 'templates', 'typescript', 'main', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
@@ -257,6 +288,6 @@ function createAppName(pathName) {
 }
 
 async function mkdirAsync(dir) {
-	if(await fs.existsAsync(dir) == false)
+	if (await fs.existsAsync(dir) == false)
 		await fs.mkdirAsync(dir);
 }
