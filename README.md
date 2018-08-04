@@ -47,7 +47,7 @@ Moreover, when you run `npm start` on the root directory, the template will make
 
 ## Why this is better
 
-The biggest advantage of this system is to separate the source code and the executable binaries as separate projects. This gives the project a root project to execute gulp tasks, build the binaries, etc. The source project contains the TypeScript code and any other assets in a prettified fashion while the executable project contains all the assets in a minified fashion.
+The biggest advantage of this system is to separate the source code and the executable binaries as separate projects. This gives the project a root project to execute gulp tasks, build the binaries, etc, a source project containing the TypeScript code and any other assets in a prettified fashion and a 'binary' project contains all the assets in a minified and uglified fashion.
 
 When it comes to production code, the project contained in the `bin` folder is distributed, which has all the code minifed and uglified, while debugging becomes easier with the project in the `src` folder, which has all the TypeScript code for type checking, prettified and all the bells and whistles.
 
