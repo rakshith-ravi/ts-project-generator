@@ -36,17 +36,16 @@ async function generate(command) {
 	await mkdirAsync(path.join(destinationPath, 'src'));
 	await mkdirAsync(path.join(destinationPath, 'bin'));
 	await fs.writeFileAsync(path.join(destinationPath, 'package.json'), JSON.stringify({
-		name: appName + '-project',
+		name: `${appName}-project`,
 		version: '1.0.0',
 		description: `Holder project for ${appName}`,
 		private: true,
 		scripts: {
-			build: 'gulp',
-			clean: 'gulp clean',
-			rebuild: 'gulp rebuild',
-			postinstall: 'cd src && npm install && cd .. && gulp && cd bin && npm install',
-			start: 'gulp && chmod +x ./bin/main.js && echo "Executing ./bin/main.js..." && ./bin/main.js',
-			build: 'npm run clean && npm install'
+			build: "original=$(cat src/package.json) && echo ${original/\"ts-node main.ts\"/\"node main.js\"} > bin/package.json && cd bin && npm install",
+			clean: "gulp clean",
+			rebuild: "gulp rebuild",
+			postinstall: "cd src && npm install",
+			start: "cd src && npm start"
 		},
 		license: 'ISC',
 		devDependencies: {
@@ -61,9 +60,10 @@ async function generate(command) {
 			"gulp-sass": "latest",
 			"gulp-typescript": "latest",
 			"gulp-uglify-es": "latest",
+			"ts-node": "latest",
 			"typescript": "latest"
 		}
-	}));
+	}, null, '\t'));
 	await fs.copyAsync(path.join(__dirname, 'templates', 'gulpfile.js'), path.join(destinationPath, 'gulpfile.js'));
 	await fs.copyAsync(path.join(__dirname, 'templates', 'tsconfig.json'), path.join(destinationPath, 'tsconfig.json'));
 
@@ -80,7 +80,7 @@ async function generate(command) {
 		version: '1.0.0',
 		private: true,
 		scripts: {
-			start: 'node main.js'
+			start: 'ts-node main.ts'
 		}
 	};
 
@@ -90,10 +90,14 @@ async function generate(command) {
 			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
 
 			// Set package dependencies for express app
+			package.dependencies = {};
 			package.dependencies.debug = 'latest';
 			package.dependencies.express = 'latest';
 			package.dependencies.morgan = 'latest';
 			package.dependencies['cookie-parser'] = 'latest';
+			package.dependencies['http-errors'] = 'latest';
+
+			package.devDependencies["node-sass"] = 'latest';
 
 			// Copy index route
 			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'routes', 'index.js'), path.join(destinationPath, 'src', 'routes', 'index.js'));
@@ -189,10 +193,14 @@ async function generate(command) {
 			package.dependencies.express = 'latest';
 			package.dependencies.morgan = 'latest';
 			package.dependencies['cookie-parser'] = 'latest';
-			package.dependencies['@types/express'] = 'latest';
-			package.dependencies['@types/http-errors'] = 'latest';
-			package.dependencies['@types/cookie-parser'] = 'latest';
-			package.dependencies['@types/morgan'] = 'latest';
+			package.dependencies['http-errors'] = 'latest';
+
+			package.devDependencies = {};
+			package.devDependencies["@types/express"] = "latest";
+			package.devDependencies["@types/morgan"] = 'latest';
+			package.devDependencies["@types/cookie-parser"] = 'latest';
+			package.devDependencies["@types/http-errors"] = 'latest';
+			package.devDependencies["@types/node-sass"] = 'latest';
 
 			// Copy index route
 			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'routes', 'index.ts'), path.join(destinationPath, 'src', 'routes', 'index.ts'));

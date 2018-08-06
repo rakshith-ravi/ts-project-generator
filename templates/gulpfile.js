@@ -4,6 +4,7 @@ let scss = require('gulp-sass');
 let minifyCSS = require('gulp-csso');
 let uglify = require('gulp-uglify-es').default;
 let minify = require('gulp-minify');
+let preprocess = require('gulp-preprocess');
 let prettyData = require('gulp-pretty-data');
 let clean = require('gulp-clean');
 let newer = require('gulp-newer');
@@ -56,6 +57,7 @@ gulp.task('js', () => {
 			'!src/**/node_modules/**/*'
 		])
 		.pipe(newer('bin'))
+		.pipe(preprocess())
 		.pipe(uglify())
 		.pipe(minify({
 			ext: {
@@ -74,6 +76,7 @@ gulp.task('ts', () => {
 		])
 		.pipe(newer('bin'))
 		.pipe(tsProject())
+		.pipe(preprocess())
 		.pipe(uglify())
 		.pipe(minify({
 			ext: {
@@ -96,7 +99,7 @@ gulp.task('images', () => {
 
 gulp.task('pretty-data', () => {
 	return gulp.src([
-			'src/**.{xml,json,xlf,svg}',
+			'src/**/*.{xml,json,xlf,svg}',
 			'!src/**/node_modules/',
 			'!src/**/node_modules/**/*'
 		])
@@ -108,11 +111,21 @@ gulp.task('pretty-data', () => {
 		.pipe(gulp.dest('bin'));
 });
 
+gulp.task('views', () => {
+	return gulp.src([
+		'src/**/*.{pug,hbs,ejs}',
+		'!src/**/node_modules/',
+		'!src/**/node_modules/**/*'
+	])
+	.pipe(newer('bin'))
+	.pipe(gulp.dest('bin'));
+});
+
 gulp.task('clean', () => {
 	return gulp.src('bin')
 		.pipe(clean());
 });
 
-gulp.task('default', gulp.series('html', 'scss', 'css', 'js', 'ts', 'images', 'pretty-data'));
+gulp.task('default', gulp.parallel('html', 'scss', 'css', 'js', 'ts', 'images', 'pretty-data', 'views'));
 gulp.task('build', gulp.series('default'));
 gulp.task('rebuild', gulp.series('clean', 'default'));
