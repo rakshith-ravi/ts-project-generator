@@ -7,6 +7,10 @@ The tool is capable of generating the following templates:
 * Static HTTP server
 * Console application
 
+## Installation
+
+`npm install -g ts-project-generator`
+
 ## Usage
 
 `ts-project [options] [project-name]`
@@ -35,6 +39,23 @@ The options can be of the following generic types:
 * `--no-git` The tool does not add a `.gitignore` file (automatically adds it by default)
 * `--no-eslint` The tool does not add a `.eslintrc` file (automatically adds it by default)
 * `--javascript, --js` The tool generates a JavaScript template instead of a TypeScript template
+
+## Example usage
+
+```sh
+ts-project landing-page --express --pug
+cd landing-page
+npm install
+```
+
+or
+
+```sh
+mkdir landing-page
+cd landing-page
+ts-project . --express --pug
+npm install
+```
 
 ## Running
 

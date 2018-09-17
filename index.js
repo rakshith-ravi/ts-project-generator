@@ -41,9 +41,9 @@ async function generate(command) {
 		description: `Holder project for ${appName}`,
 		private: true,
 		scripts: {
-			build: "original=$(cat src/package.json) && echo ${original/\"ts-node main.ts\"/\"node main.js\"} > bin/package.json && cd bin && npm install",
+			build: "NODE_ENV=production gulp && bash -c 'original=$(cat ./src/package.json) && echo ${original/\"ts-node main.ts\"/\"NODE_ENV=production node main.js\"} > ./bin/package.json' && cd bin && NODE_ENV=production npm install",
 			clean: "gulp clean",
-			rebuild: "gulp rebuild",
+			rebuild: "gulp clean && npm run build",
 			postinstall: "cd src && npm install",
 			start: "cd src && npm start"
 		},
@@ -75,7 +75,7 @@ async function generate(command) {
 		await fs.copyAsync(path.join(__dirname, 'templates', 'gitignore'), path.join(destinationPath, '.gitignore'));
 	}
 
-	var package = {
+	var pkg = {
 		name: appName,
 		version: '1.0.0',
 		private: true,
@@ -90,14 +90,15 @@ async function generate(command) {
 			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
 
 			// Set package dependencies for express app
-			package.dependencies = {};
-			package.dependencies.debug = 'latest';
-			package.dependencies.express = 'latest';
-			package.dependencies.morgan = 'latest';
-			package.dependencies['cookie-parser'] = 'latest';
-			package.dependencies['http-errors'] = 'latest';
+			pkg.dependencies = {};
+			pkg.dependencies.debug = 'latest';
+			pkg.dependencies.express = 'latest';
+			pkg.dependencies.morgan = 'latest';
+			pkg.dependencies['cookie-parser'] = 'latest';
+			pkg.dependencies['http-errors'] = 'latest';
+			pkg.dependencies['serve-favicon'] = 'latest';
 
-			package.devDependencies["node-sass"] = 'latest';
+			pkg.devDependencies["node-sass"] = 'latest';
 
 			// Copy index route
 			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'routes', 'index.js'), path.join(destinationPath, 'src', 'routes', 'index.js'));
@@ -108,7 +109,7 @@ async function generate(command) {
 			// Populate views directory based on views selected
 			if (command.ejs) {
 				// Add ejs as a dependency
-				package.dependencies.ejs = 'latest';
+				pkg.dependencies.ejs = 'latest';
 
 				// Copy EJS app
 				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'app-ejs.js'), path.join(destinationPath, 'src', 'app.js'));
@@ -117,7 +118,7 @@ async function generate(command) {
 				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
 			} else if (command.hbs) {
 				// Add HandleBars as a dependency
-				package.dependencies.hbs = 'latest';
+				pkg.dependencies.hbs = 'latest';
 
 				// Copy HandleBars' app
 				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'app-hbs.js'), path.join(destinationPath, 'src', 'app.js'));
@@ -127,7 +128,7 @@ async function generate(command) {
 				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'views', 'index.hbs'), path.join(destinationPath, 'src', 'views', 'index.hbs'));
 			} else {
 				// Add Pug as a dependency
-				package.dependencies.pug = 'latest';
+				pkg.dependencies.pug = 'latest';
 
 				// Copy Pug's app
 				await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'app-pug.js'), path.join(destinationPath, 'src', 'app.js'));
@@ -188,19 +189,21 @@ async function generate(command) {
 			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
 
 			// Set package dependencies for express app
-			package.dependencies = {};
-			package.dependencies.debug = 'latest';
-			package.dependencies.express = 'latest';
-			package.dependencies.morgan = 'latest';
-			package.dependencies['cookie-parser'] = 'latest';
-			package.dependencies['http-errors'] = 'latest';
+			pkg.dependencies = {};
+			pkg.dependencies.debug = 'latest';
+			pkg.dependencies.express = 'latest';
+			pkg.dependencies.morgan = 'latest';
+			pkg.dependencies['cookie-parser'] = 'latest';
+			pkg.dependencies['http-errors'] = 'latest';
+			pkg.dependencies['serve-favicon'] = 'latest';
 
-			package.devDependencies = {};
-			package.devDependencies["@types/express"] = "latest";
-			package.devDependencies["@types/morgan"] = 'latest';
-			package.devDependencies["@types/cookie-parser"] = 'latest';
-			package.devDependencies["@types/http-errors"] = 'latest';
-			package.devDependencies["@types/node-sass"] = 'latest';
+			pkg.devDependencies = {};
+			pkg.devDependencies["@types/express"] = "latest";
+			pkg.devDependencies["@types/morgan"] = 'latest';
+			pkg.devDependencies["@types/cookie-parser"] = 'latest';
+			pkg.devDependencies["@types/http-errors"] = 'latest';
+			pkg.devDependencies["@types/node-sass"] = 'latest';
+			pkg.devDependencies['@types/serve-favicon'] = 'latest';
 
 			// Copy index route
 			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'routes', 'index.ts'), path.join(destinationPath, 'src', 'routes', 'index.ts'));
@@ -211,7 +214,7 @@ async function generate(command) {
 			// Populate views directory based on views selected
 			if (command.ejs) {
 				// Add ejs as a dependency
-				package.dependencies.ejs = 'latest';
+				pkg.dependencies.ejs = 'latest';
 
 				// Copy EJS app
 				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'app-ejs.ts'), path.join(destinationPath, 'src', 'app.ts'));
@@ -220,7 +223,7 @@ async function generate(command) {
 				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'views', 'index.ejs'), path.join(destinationPath, 'src', 'views', 'index.ejs'));
 			} else if (command.hbs) {
 				// Add HandleBars as a dependency
-				package.dependencies.hbs = 'latest';
+				pkg.dependencies.hbs = 'latest';
 
 				// Copy HandleBars' app
 				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'app-hbs.ts'), path.join(destinationPath, 'src', 'app.ts'));
@@ -230,7 +233,7 @@ async function generate(command) {
 				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'views', 'index.hbs'), path.join(destinationPath, 'src', 'views', 'index.hbs'));
 			} else {
 				// Add Pug as a dependency
-				package.dependencies.pug = 'latest';
+				pkg.dependencies.pug = 'latest';
 
 				// Copy Pug's app
 				await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'app-pug.ts'), path.join(destinationPath, 'src', 'app.ts'));
@@ -287,7 +290,7 @@ async function generate(command) {
 		}
 	}
 
-	await fs.writeFileAsync(path.join(destinationPath, 'src', 'package.json'), JSON.stringify(package, null, '\t'));
+	await fs.writeFileAsync(path.join(destinationPath, 'src', 'package.json'), JSON.stringify(pkg, null, '\t'));
 }
 
 function createAppName(pathName) {
