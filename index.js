@@ -41,7 +41,7 @@ async function generate(command) {
 		description: `Holder project for ${appName}`,
 		private: true,
 		scripts: {
-			build: "NODE_ENV=production gulp && bash -c 'original=$(cat ./src/package.json) && echo ${original/\"ts-node main.ts\"/\"NODE_ENV=production node main.js\"} > ./bin/package.json' && cd bin && NODE_ENV=production npm install",
+			build: "node build.js",
 			clean: "gulp clean",
 			rebuild: "gulp clean && npm run build",
 			postinstall: "cd src && npm install",
@@ -55,9 +55,9 @@ async function generate(command) {
 			"gulp-htmlmin": "latest",
 			"gulp-minify": "latest",
 			"gulp-newer": "latest",
+			"gulp-preprocess": "latest",
 			"gulp-pretty-data": "latest",
 			"gulp-pug": "latest",
-			"gulp-preprocess": "latest",
 			"gulp-sass": "latest",
 			"gulp-typescript": "latest",
 			"gulp-uglify-es": "latest",
@@ -66,6 +66,7 @@ async function generate(command) {
 		}
 	}, null, '\t'));
 	await fs.copyAsync(path.join(__dirname, 'templates', 'gulpfile.js'), path.join(destinationPath, 'gulpfile.js'));
+	await fs.copyAsync(path.join(__dirname, 'templates', 'build.js'), path.join(destinationPath, 'build.js'));
 	await fs.copyAsync(path.join(__dirname, 'templates', 'tsconfig.json'), path.join(destinationPath, 'tsconfig.json'));
 
 	if (!command['no-eslint']) {
