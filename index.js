@@ -57,6 +57,7 @@ async function generate(command) {
 			"gulp-newer": "latest",
 			"gulp-pretty-data": "latest",
 			"gulp-pug": "latest",
+			"gulp-preprocess": "latest",
 			"gulp-sass": "latest",
 			"gulp-typescript": "latest",
 			"gulp-uglify-es": "latest",
