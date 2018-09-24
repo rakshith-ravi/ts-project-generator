@@ -75,8 +75,8 @@ gulp.task('ts', () => {
 			'!src/**/node_modules/**/*'
 		])
 		.pipe(newer('bin'))
-		.pipe(tsProject())
 		.pipe(preprocess())
+		.pipe(tsProject())
 		.pipe(uglify())
 		.pipe(minify({
 			ext: {
