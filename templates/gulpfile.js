@@ -121,11 +121,22 @@ gulp.task('views', () => {
 	.pipe(gulp.dest('bin'));
 });
 
+gulp.task('copy', () => {
+	return gulp.src([
+		'src/**/*',
+		'!src/**/*.{pug,hbs,ejs,xml,json,xlf,svg,png,jpg,jpeg,gif,svg,tif,ts,js,css,scss,sass,html}',
+		'!src/**/node_modules/',
+		'!src/**/node_modules/**/*'
+	])
+	.pipe(newer('bin'))
+	.pipe(gulp.dest('bin'));
+});
+
 gulp.task('clean', () => {
 	return gulp.src('bin')
 		.pipe(clean());
 });
 
-gulp.task('default', gulp.parallel('html', 'scss', 'css', 'js', 'ts', 'images', 'pretty-data', 'views'));
+gulp.task('default', gulp.parallel('html', 'scss', 'css', 'js', 'ts', 'images', 'pretty-data', 'views', 'copy'));
 gulp.task('build', gulp.series('default'));
 gulp.task('rebuild', gulp.series('clean', 'default'));
