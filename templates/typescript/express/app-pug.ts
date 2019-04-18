@@ -13,14 +13,44 @@ import { existsSync, readFileSync } from 'fs';
 import { transpileModule } from 'typescript';
 // @endif
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-//app.use(favicon(join(__dirname, 'public', 'favicon.ico')));
+// @if NODE_ENV != 'production'
+app.locals.pretty = true;
 app.use(logger('dev'));
+app.set('json spaces', 4);
+// @endif
+
+/* @if NODE_ENV == 'production' **
+const projectName = require('./package.json').name;
+const logDirectory = join(process.env.HOME, '.logs', projectName);
+
+app.use('/', compression());
+app.use(favicon(join(__dirname, 'public', 'favicon.ico')));
+
+app.locals.pretty = false;
+
+// ensure log directory exists
+if (existsSync(logDirectory) === false) {
+	mkdirpSync(logDirectory);
+}
+
+app.use(logger(logger.compile(':date, :method :url :status :response-time ms - :res[content-length], :remote-addr'), {
+	stream: rfs(logFileNamer, {
+		size: '200M',
+		path: logDirectory,
+		compress: true,
+		immutable: true
+	})
+}));
+app.set('json spaces', 0);
+app.use(helmet());
+/* @endif */
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -30,36 +60,36 @@ app.use((req, res, next) => {
 	if (req.url.endsWith('.css')) {
 		let cssLocation = join(__dirname, 'public', req.url);
 		if (existsSync(cssLocation)) {
-			res.writeHead(200, { "Content-Type": "text/css" });
+			res.writeHead(200, { 'Content-Type': 'text/css' });
 			res.write(readFileSync(cssLocation));
 			res.end();
-		} else if (existsSync(cssLocation.replace(".css", ".scss"))) {
+		} else if (existsSync(cssLocation.replace('.css', '.scss'))) {
 			try {
 				let result = sass.renderSync({
-					file: cssLocation.replace(".css", ".scss")
+					file: cssLocation.replace('.css', '.scss')
 				});
-				res.writeHead(200, { "Content-Type": "text/css" });
+				res.writeHead(200, { 'Content-Type': 'text/css' });
 				res.write(result.css);
 				res.end();
 			} catch (err) {
 				if (err) {
 					next(err);
 					return;
-				}	
+				}
 			}
-		} else if (existsSync(cssLocation.replace(".css", ".sass"))) {
+		} else if (existsSync(cssLocation.replace('.css', '.sass'))) {
 			try {
 				let result = sass.renderSync({
-					file: cssLocation.replace(".css", ".sass")
+					file: cssLocation.replace('.css', '.sass')
 				});
-				res.writeHead(200, { "Content-Type": "text/css" });
+				res.writeHead(200, { 'Content-Type': 'text/css' });
 				res.write(result.css);
 				res.end();
 			} catch (err) {
 				if (err) {
 					next(err);
 					return;
-				}	
+				}
 			}
 		} else {
 			next();
@@ -73,15 +103,15 @@ app.use((req, res, next) => {
 	if (req.url.endsWith('.js')) {
 		let jsLocation = join(__dirname, 'public', req.url);
 		if (existsSync(jsLocation)) {
-			res.writeHead(200, { "Content-Type": "application/javascript" });
+			res.writeHead(200, { 'Content-Type': 'application/javascript' });
 			res.write(readFileSync(jsLocation));
 			res.end();
-		} else if (existsSync(jsLocation.replace(".js", ".ts"))){
+		} else if (existsSync(jsLocation.replace('.js', '.ts'))){
 			let result = transpileModule(
-				readFileSync(jsLocation.replace(".js", ".ts")).toString(),
+				readFileSync(jsLocation.replace('.js', '.ts')).toString(),
 				JSON.parse(readFileSync(join(__dirname, '..', 'tsconfig.json')).toString())
 			);
-			res.writeHead(200, { "Content-Type": "application/javascript" });
+			res.writeHead(200, { 'Content-Type': 'application/javascript' });
 			res.write(result.outputText);
 			res.end();
 		} else {
