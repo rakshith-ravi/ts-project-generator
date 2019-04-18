@@ -58,14 +58,14 @@ app.use(cookieParser());
 // @if NODE_ENV != 'production'
 app.use((req, res, next) => {
 	if (req.url.endsWith('.css')) {
-		let cssLocation = join(__dirname, 'public', req.url);
+		const cssLocation = join(__dirname, 'public', req.url);
 		if (existsSync(cssLocation)) {
 			res.writeHead(200, { 'Content-Type': 'text/css' });
 			res.write(readFileSync(cssLocation));
 			res.end();
 		} else if (existsSync(cssLocation.replace('.css', '.scss'))) {
 			try {
-				let result = sass.renderSync({
+				const result = sass.renderSync({
 					file: cssLocation.replace('.css', '.scss')
 				});
 				res.writeHead(200, { 'Content-Type': 'text/css' });
@@ -79,7 +79,7 @@ app.use((req, res, next) => {
 			}
 		} else if (existsSync(cssLocation.replace('.css', '.sass'))) {
 			try {
-				let result = sass.renderSync({
+				const result = sass.renderSync({
 					file: cssLocation.replace('.css', '.sass')
 				});
 				res.writeHead(200, { 'Content-Type': 'text/css' });
@@ -101,13 +101,13 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
 	if (req.url.endsWith('.js')) {
-		let jsLocation = join(__dirname, 'public', req.url);
+		const jsLocation = join(__dirname, 'public', req.url);
 		if (existsSync(jsLocation)) {
 			res.writeHead(200, { 'Content-Type': 'application/javascript' });
 			res.write(readFileSync(jsLocation));
 			res.end();
-		} else if (existsSync(jsLocation.replace('.js', '.ts'))){
-			let result = transpileModule(
+		} else if (existsSync(jsLocation.replace('.js', '.ts'))) {
+			const result = transpileModule(
 				readFileSync(jsLocation.replace('.js', '.ts')).toString(),
 				JSON.parse(readFileSync(join(__dirname, '..', 'tsconfig.json')).toString())
 			);
