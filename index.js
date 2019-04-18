@@ -41,28 +41,28 @@ async function generate(command) {
 		description: `Holder project for ${appName}`,
 		private: true,
 		scripts: {
-			build: "node build.js",
-			clean: "gulp clean",
-			rebuild: "gulp clean && npm run build",
-			postinstall: "cd src && npm install",
-			start: "cd src && npm start"
+			build: 'node build.js',
+			clean: 'gulp clean',
+			rebuild: 'gulp clean && npm run build',
+			postinstall: 'cd src && npm install',
+			start: 'cd src && npm start'
 		},
 		license: 'ISC',
 		devDependencies: {
-			"gulp": "^4.0.0",
-			"gulp-clean": "latest",
-			"gulp-csso": "latest",
-			"gulp-htmlmin": "latest",
-			"gulp-minify": "latest",
-			"gulp-newer": "latest",
-			"gulp-preprocess": "latest",
-			"gulp-pretty-data": "latest",
-			"gulp-pug": "latest",
-			"gulp-sass": "latest",
-			"gulp-typescript": "latest",
-			"gulp-uglify-es": "latest",
-			"ts-node": "latest",
-			"typescript": "latest"
+			'gulp': '^4.0.0',
+			'gulp-clean': 'latest',
+			'gulp-csso': 'latest',
+			'gulp-htmlmin': 'latest',
+			'gulp-minify': 'latest',
+			'gulp-newer': 'latest',
+			'gulp-preprocess': 'latest',
+			'gulp-pretty-data': 'latest',
+			'gulp-pug': 'latest',
+			'gulp-sass': 'latest',
+			'gulp-typescript': 'latest',
+			'gulp-uglify-es': 'latest',
+			'ts-node': 'latest',
+			'typescript': 'latest'
 		}
 	}, null, '\t'));
 	await fs.copyAsync(path.join(__dirname, 'templates', 'gulpfile.js'), path.join(destinationPath, 'gulpfile.js'));
@@ -100,7 +100,7 @@ async function generate(command) {
 			pkg.dependencies['http-errors'] = 'latest';
 			pkg.dependencies['serve-favicon'] = 'latest';
 
-			pkg.devDependencies["node-sass"] = 'latest';
+			pkg.devDependencies['node-sass'] = 'latest';
 
 			// Copy index route
 			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'express', 'routes', 'index.js'), path.join(destinationPath, 'src', 'routes', 'index.js'));
@@ -186,6 +186,8 @@ async function generate(command) {
 			await fs.copyAsync(path.join(__dirname, 'templates', 'javascript', 'main', 'main.js'), path.join(destinationPath, 'src', 'main.js'));
 		}
 	} else {
+		await fs.copyAsync(path.join(__dirname, 'templates', 'tslint.json'), path.join(destinationPath, 'tslint.json'));
+
 		if (command.express) {
 			// Copy main file
 			await fs.copyAsync(path.join(__dirname, 'templates', 'typescript', 'express', 'main.ts'), path.join(destinationPath, 'src', 'main.ts'));
@@ -200,11 +202,11 @@ async function generate(command) {
 			pkg.dependencies['serve-favicon'] = 'latest';
 
 			pkg.devDependencies = {};
-			pkg.devDependencies["@types/express"] = "latest";
-			pkg.devDependencies["@types/morgan"] = 'latest';
-			pkg.devDependencies["@types/cookie-parser"] = 'latest';
-			pkg.devDependencies["@types/http-errors"] = 'latest';
-			pkg.devDependencies["@types/node-sass"] = 'latest';
+			pkg.devDependencies['@types/express'] = 'latest';
+			pkg.devDependencies['@types/morgan'] = 'latest';
+			pkg.devDependencies['@types/cookie-parser'] = 'latest';
+			pkg.devDependencies['@types/http-errors'] = 'latest';
+			pkg.devDependencies['@types/node-sass'] = 'latest';
 			pkg.devDependencies['@types/serve-favicon'] = 'latest';
 
 			// Copy index route
